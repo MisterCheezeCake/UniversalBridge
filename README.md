@@ -5,5 +5,4 @@ UniversalBridge is a module to improve the look of any guild's discord bridge. T
 - Kerbybit making the bridge universal
 - Squagward for some misc stuff
 ### Links
-GitHub: https://github.com/MisterCheezeCake/MMBridge/tree/UniversalBridge-Development
 Discord: https://discord.gg/YH3hw926hz
