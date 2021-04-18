@@ -1,0 +1,2 @@
+# UniversalBridge
+UniversalBridge ChatTriggers module
