@@ -1,4 +1,4 @@
-import { @Vigilant, @TextProperty, @ColorProperty, @ButtonProperty, @SwitchProperty, Color, @CheckboxProperty, @SelectorProperty } from 'Vigilance';
+import { @Vigilant, @TextProperty, @ColorProperty, @ButtonProperty, @SwitchProperty, Color, @CheckboxProperty, @SelectorProperty } from '../Vigilance/index';
 
 @Vigilant("UniversalBridge")
 class Settings {
@@ -17,13 +17,17 @@ class Settings {
     })
     botName = ""
     @TextProperty({
+        name: "Seperator",
+        description: "The string that your guild uses to seperate the person's name from the message",
+        category: "General"
+    })
+    seperator = ":"
+    @TextProperty({
         name: "Bridge Prefix",
         description: "Prefix for the guild bridge",
         category: "Appearance",
     })
     prefix = "[BRIDGE]"
-    // Will Renable when I find a simple way to convert these ints into mc color codes
-    /*
     @SelectorProperty({
         name: "Bridge Color",
         description: "Select the color of your prefix",
@@ -49,23 +53,13 @@ class Settings {
 
     })
     bridgeColor = 1;
-    */
-    @ButtonProperty({
-        name: "Color Settings",
-        description: "Open the color settings menu",
-        category: "Appearance",
-        placeholder: "Open"
-    })
-    openColorSettings() {
-        ChatLib.command('ubcolorsettings', true)
-    }
     @CheckboxProperty({
         name: "Bridge Bold",
         description: "Check to make the bridge prefix bold",
         category: "Appearance",
     })
     prefixBold = false
-    /*
+    
     @SelectorProperty({
         name: "Discord User Color",
         description: "Select the color of the discord user",
@@ -90,14 +84,14 @@ class Settings {
     ]
 
     })
-    prefixColor = 1;
-    */
+    userColor = 1;
+    
     @CheckboxProperty({
         name: "Discord User Bold",
         description: "Check to make the discord user bold",
         category: "Appearance",
     })
-    userBold = false
+    userBold = false;
 
 
 
