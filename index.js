@@ -17,9 +17,9 @@ register("command", (arg1) => {
 }).setTabCompletions('settings', 'help').setName('bridge')
 const colorArray = ["&4", "&c" ,"&6", "&e", "&2", "&a", "&b", "&3", "&1", "&9", "&d", "&5", "&f", "&7", "&8", "&0"];
 register("chat", bridgeChat).setCriteria("&r&2Guild > ${*} ${bot} ${*}: &r${player}" + Settings.seperator + " ${msg}&r");
-register("chat", bridgeChat).setCriteria("&r&2Guild > ${bot} ${*}: &r${player}" + Settings.seperatorArray + " ${msg}&r");
+register("chat", bridgeChat).setCriteria("&r&2Guild > ${bot} ${*}: &r${player}" + Settings.seperator + " ${msg}&r");
 register("chat", bridgeChat).setCriteria("&r&2Guild > ${*} ${bot}: &r${player}"+ Settings.seperator + " ${msg}&r");
-register("chat", bridgeChat).setCriteria("&r&2Guild > ${bot}: &r${player}"+ Settings.seperatorArray + " ${msg}&r");
+register("chat", bridgeChat).setCriteria("&r&2Guild > ${bot}: &r${player}"+ Settings.seperator + " ${msg}&r");
 function bridgeChat(bot, player, msg, event) {
   if (!Settings.enabled) return;
   if (Settings.botName.toLowerCase() !== ChatLib.removeFormatting(bot).toLowerCase()) return;
@@ -34,8 +34,3 @@ function bridgeChat(bot, player, msg, event) {
 
 const cl = new Changelog('UniversalBridge', '&e1.3.0', '&aThe module now supports multiple seperators')
 cl.writeChangelog()
-
-register("command", arg1 => {
-  eval(arg1)
-  ChatLib.chat('&aEvaluation Completed')
-}).setName("ubeval")
