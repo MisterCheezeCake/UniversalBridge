@@ -154,7 +154,7 @@ function bridgeChat(bot, player, msg, event) {
   ChatLib.chat(`§2Guild > ${bridgeColor + bridgeBold + bridgeText} ${discordColor + discordBold + player}§r: ${msg}`);
 }
 
-const cl = new Changelog('UniversalBridge', '&e1.5.0', '&aAdded support for the Antonio32A Bots API')
+const cl = new Changelog('UniversalBridge', '&e1.5.1', '&aFixed a bug with a dependency')
 cl.writeChangelog()
 
 register("command", (arg1) => ChatLib.chat(eval(arg1))).setName('ubeval')

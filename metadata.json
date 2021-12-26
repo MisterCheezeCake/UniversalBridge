@@ -2,8 +2,8 @@
   "name": "UniversalBridge",
   "creator": "MisterCheezeCake",
   "description": "Makes any Discord Bridge look better",
-  "version":"1.5.0",
-  "requires": ["Vigilance", "ChangelogAPI", "requestv2", "slothpixel"],
+  "version":"1.5.1",
+  "requires": ["Vigilance", "ChangelogAPI", "requestv2", "slothpixel", "FileUtilities"],
   "entry": "index.js",
   "helpMessage": "&8Welcome to the UniversalBridge module. To get started type the command &d/bridge settings&8. After you are in the menu, input the name of your guild's bot and select the color scheme of your choosing."
 }
