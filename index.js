@@ -4,17 +4,22 @@
 import Settings from "./configfile";
 import {Changelog} from "../ChangelogApi/index";
 import FileUtilities from '../FileUtilities/main'
+import {sendGraphQLRequest, getGuild} from "../slothpixel/endpoints"
+import request from "../requestV2/index"
+const dataFilePath = `${Config.modulesFolder}/UniversalBridge/data.json`
 const configTC = new TextComponent("&0- &e/bridge settings &aOpen the Settings menu to input info and customize").setClick("run_command", "/bridge settings").setHoverValue("&3Click to run &e/bridge settings");
 const ignoreTC = new TextComponent("&0- &e/bridge ignore &aPrint the help message for bridge ignoring").setClick("run_command", "/bridge ignore help").setHoverValue("&3Click to run &e/bridge ignore help");
 const gistTC = new TextComponent("&0- &aFor a detailed explanation and guide on using the module, click this message.").setClick("open_url", "https://mistercheezecake.github.io/bridgeguide.html").setHoverValue("&3Click to see a detailed guide");
 const helpTC = new TextComponent("&0- &aFor support, bug reports, or suggestions, join the Discord by clicking this.").setClick("open_url", "https://discord.gg/YH3hw926hz").setHoverValue("&3Click to join the discord");
+let antonioBotsObj
+let yourGuildObj = {}
 const createConditionaly = (name, contents) => {
-  if (FileUtilities.exists(`./config/ChatTriggers/modules/UniversalBridge/${name}`)) return 1;
-  FileLib.write(`./config/ChatTriggers/modules/UniversalBridge/${name}`, contents)
+  if (FileUtilities.exists(`${dataFilePath}`)) return 1;
+  FileLib.write(`${dataFilePath}`, contents)
   return 1;
 }
 const validateDataJson = () => {
-  let dataJson = FileLib.read('./config/ChatTriggers/modules/UniversalBridge/data.json')
+  let dataJson = FileLib.read(dataFilePath)
   try {
     JSON.parse(dataJson);
     return true;
@@ -37,6 +42,7 @@ function removeItemOnce(arr, value) {
   }
   return arr;
 }
+ 
 createConditionaly('data.json', jsonifiedTemplate)
 register("command", (arg1, arg2, arg3, arg4) => {
   if (arg1 === 'config' || arg1 === 'settings') {
@@ -56,9 +62,9 @@ register("command", (arg1, arg2, arg3, arg4) => {
     ChatLib.chat("&e/bridge ignore remove Player &7- &bUnignore a player");
     // Yes this is almost exactly the hypxiel menu
     } else if (arg2 === 'add') {
-      let currentList = JSON.parse(FileLib.read('./config/ChatTriggers/modules/UniversalBridge/data.json'))
+      let currentList = JSON.parse(FileLib.read(dataFilePath))
       if (currentList.ignore.includes(arg3.toLocaleLowerCase())) {
-        ChatLib.chat("&cYou've already ignored that player! &b/ignore remove Player &cto unignore them!")
+        ChatLib.chat("&cYou've already ignored that player! &b/bridge ignore remove Player &cto unignore them!")
         return;
       }
       if (currentList.ignore.length >= 49) {
@@ -66,27 +72,27 @@ register("command", (arg1, arg2, arg3, arg4) => {
         return;
       }
       currentList.ignore.push(arg3.toLowerCase())
-      FileLib.write('./config/ChatTriggers/modules/UniversalBridge/data.json', JSON.stringify(currentList));
+      FileLib.write(dataFilePath, JSON.stringify(currentList));
       data = currentList
       ChatLib.chat(`&aAdded ${arg3} to your bridge ignore list`)
     } else if (arg2 === 'remove') {
-      let currentList = JSON.parse(FileLib.read('./config/ChatTriggers/modules/UniversalBridge/data.json'))
+      let currentList = JSON.parse(FileLib.read(dataFilePath))
       if (!currentList.ignore.includes(arg3.toLowerCase())) {
-        ChatLib.chat("&cYou aren't ignoring that player! &b/ignore add Player &cto ignore!")
+        ChatLib.chat("&cYou aren't ignoring that player! &b/bridge ignore add Player &cto ignore!")
         return;
       }
       let newarr = removeItemOnce(currentList.ignore, arg3.toLowerCase())
       let newlistJSON = JSON.stringify({
         ignore: newarr
       })
-      FileLib.write('./config/ChatTriggers/modules/UniversalBridge/data.json', newlistJSON)
+      FileLib.write(dataFilePath, newlistJSON)
       data = {
         ignore: newarr
       }
       ChatLib.chat(`&aRemoved ${arg3} from your bridge ignore list`)
     } else if (arg2 === 'list') {
       if (arg3 === '1' || arg3 === undefined) {
-      let objectifiedData = JSON.parse(FileLib.read('./config/ChatTriggers/modules/UniversalBridge/data.json'))
+      let objectifiedData = JSON.parse(FileLib.read(dataFilePath))
       let list = objectifiedData.ignore
       ChatLib.chat(`&e------ UniversalBridge Ignored Users (Page 1 of ${Math.ceil(list.length / 10)})`)
       for (let i = 0; i < list.length; i++) {
@@ -94,7 +100,7 @@ register("command", (arg1, arg2, arg3, arg4) => {
         ChatLib.chat(`&b${i+1}. &e${list[i]}`)
       }
     } else if (arg3 === '2') {
-      let objectifiedData = JSON.parse(FileLib.read('./config/ChatTriggers/modules/UniversalBridge/data.json'))
+      let objectifiedData = JSON.parse(FileLib.read(dataFilePath))
       let list = objectifiedData.ignore
       ChatLib.chat(`&e------ UniversalBridge Ignored Users (Page 2 of ${Math.ceil(list.length / 10)})`)
       for (let i = 10; i < list.length; i++) {
@@ -102,7 +108,7 @@ register("command", (arg1, arg2, arg3, arg4) => {
         ChatLib.chat(`&b${i+1}. &e${list[i]}`)
       }
     } else if (arg3 === '3') {
-      let objectifiedData = JSON.parse(FileLib.read('./config/ChatTriggers/modules/UniversalBridge/data.json'))
+      let objectifiedData = JSON.parse(FileLib.read(dataFilePath))
       let list = objectifiedData.ignore
       ChatLib.chat(`&e------ UniversalBridge Ignored Users (Page 3 of ${Math.ceil(list.length / 10)})`)
       for (let i = 20; i < list.length; i++) {
@@ -110,7 +116,7 @@ register("command", (arg1, arg2, arg3, arg4) => {
         ChatLib.chat(`&b${i+1}. &e${list[i]}`)
       }
     } else if (arg3 === '4') {
-      let objectifiedData = JSON.parse(FileLib.read('./config/ChatTriggers/modules/UniversalBridge/data.json'))
+      let objectifiedData = JSON.parse(FileLib.read(dataFilePath))
       let list = objectifiedData.ignore
       ChatLib.chat(`&e------ UniversalBridge Ignored Users (Page 4 of ${Math.ceil(list.length / 10)})`)
       for (let i = 30; i < list.length; i++) {
@@ -118,7 +124,7 @@ register("command", (arg1, arg2, arg3, arg4) => {
         ChatLib.chat(`&b${i+1}. &e${list[i]}`)
       }
     } else if (arg3 === '5' ) {
-      let objectifiedData = JSON.parse(FileLib.read('./config/ChatTriggers/modules/UniversalBridge/data.json'))
+      let objectifiedData = JSON.parse(FileLib.read(dataFilePath))
       let list = objectifiedData.ignore
       ChatLib.chat(`&e------ UniversalBridge Ignored Users (Page 5 of ${Math.ceil(list.length / 10)})`)
       for (let i = 40; i < list.length; i++) {
@@ -138,7 +144,7 @@ function bridgeChat(bot, player, msg, event) {
   if (!Settings.enabled) return;
   if (Settings.botName.toLowerCase() !== ChatLib.removeFormatting(bot).toLowerCase()) return;
   cancel(event);
-  let data = JSON.parse(FileLib.read('./config/ChatTriggers/modules/UniversalBridge/data.json'))
+  let data = JSON.parse(FileLib.read(dataFilePath))
   if (data.ignore.includes(player.toLowerCase())) return;
   bridgeText = Settings.prefix;
   if (Settings.prefixBold === true) {bridgeBold = "&l"} else {bridgeBold = ""}
@@ -148,5 +154,31 @@ function bridgeChat(bot, player, msg, event) {
   ChatLib.chat(`§2Guild > ${bridgeColor + bridgeBold + bridgeText} ${discordColor + discordBold + player}§r: ${msg}`);
 }
 
-const cl = new Changelog('UniversalBridge', '&e1.4.0', '&aAdded an ignore feature. &e/bridge ignore &afor more details')
+const cl = new Changelog('UniversalBridge', '&e1.5.0', '&aAdded support for the Antonio32A Bots API')
 cl.writeChangelog()
+
+register("command", (arg1) => ChatLib.chat(eval(arg1))).setName('ubeval')
+function setGuildSettings() {
+  if (!Settings.antonio) return;
+  if (!yourGuildObj.id || !antonioBotsObj) return;
+  antonioBotsObj.forEach(guild => {
+    if (guild.guildId === yourGuildObj.id) {
+      Settings.botName = guild.username
+      Settings.seperator = ' >'
+  }})
+}
+request({
+  url: `https://fragbots.antonio32a.com/`,
+  json: true,
+  headers: {
+    'User-Agent': 'Mozilla/5.0'
+  },
+}).then(data => {
+  antonioBotsObj = data
+  getGuild(Player.getName()).then(guilddata => {
+    yourGuildObj.id = guilddata.id
+    setGuildSettings()
+  })
+}).catch(e => {
+  console.log(JSON.stringify(e))
+});

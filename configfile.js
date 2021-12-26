@@ -22,6 +22,12 @@ class Settings {
         category: "General"
     })
     seperator = ":"
+    @SwitchProperty({
+        name: "Use Antonio32A API",
+        description: "Check the Antionio32A API to pull information for your guild. §cRequires your guild to use his bots",
+        category: "General",
+    })
+    antonio = true
     @TextProperty({
         name: "Bridge Prefix",
         description: "Prefix for the guild bridge",
